@@ -43,7 +43,7 @@ class Offer extends yupe\models\YModel
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return [
-			['title, slug, type_id, user_id, text, status', 'required'],
+			['title, slug, type_id, text, status', 'required'],
 			['type_id, user_id, status', 'numerical', 'integerOnly'=>true],
 			['title, slug', 'length', 'max'=>150],
             ['slug','unique'],
@@ -79,13 +79,6 @@ class Offer extends yupe\models\YModel
 		];
 	}
 
-    public function beforeSave()
-    {
-        /*if ( $this->isNewRecord )
-            $this->slug = uniqid();*/
-        return parent::beforeSave();
-    }
-
     public function scopes()
     {
         return [
@@ -110,8 +103,6 @@ class Offer extends yupe\models\YModel
 	 */
 	public function search()
 	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
-
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
@@ -171,13 +162,20 @@ class Offer extends yupe\models\YModel
         return $offers;
     }
 
+    public function getLinkByUser()
+    {
+        return ($this->user === null)
+            ? '---'
+            : CHtml::link($this->user->getFullName(), ["/user/userBackend/view", "id" => $this->user->id]);
+    }
+
     /**
      * @param array $post
      * @return bool
      */
     public function createPublicOffer(array $post)
     {
-        if (empty($post['type_id']) || empty($post['user_id'])) {
+        if (empty($post['type_id'])/* || is_null($post['user_id'])*/) {
             $this->addError('type_id', Yii::t('OfferModule.offer', "Offer is empty!"));
 
             return false;
@@ -185,21 +183,10 @@ class Offer extends yupe\models\YModel
 
         $offerType = OfferType::model()->active()->findByPk((int)$post['type_id']);
 
-        if (null === $offerType) {
-            $this->addError('type_id', Yii::t('OfferModule.offer', "1-You can't write in this offerType!"));
+        if (null === $offerType || !$offerType->checkCreatePublicOffer($post['user_id']) ) {
+            $this->addError('type_id', Yii::t('OfferModule.offer', "You can't write in this offerType!"));
             return false;
         }
-
-        if ($offerType->param_add == OfferType::PARAM_ADD_NOBODY ) {
-            $this->addError('type_id', Yii::t('OfferModule.offer', "2-You can't write in this offerType!"));
-            return false;
-        }
-
-        if ($offerType->param_add == OfferType::PARAM_ADD_USER && empty($post['user_id']) ) {
-            $this->addError('type_id', Yii::t('OfferModule.offer', "3-You can't write in this offerType!"));
-            return false;
-        }
-
 
         $this->setAttributes($post);
         $this->slug = uniqid();

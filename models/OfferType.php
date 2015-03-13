@@ -219,4 +219,22 @@ class OfferType extends yupe\models\YModel
 
         return isset($data[$this->param_message]) ? $data[$this->param_message] : Yii::t('OfferModule.offer', '*unknown*');
     }
+
+    /**
+     * Проверяем может ли пользователь добавдять данный тип предложения
+     *
+     * @return bool
+     */
+    public function checkCreatePublicOffer($user_id)
+    {
+        if ($this->param_add == OfferType::PARAM_ADD_NOBODY ) {
+            return false;
+        }
+
+        if ($this->param_add == OfferType::PARAM_ADD_USER && is_null($user_id) ) {
+            return false;
+        }
+
+        return true;
+    }
 }

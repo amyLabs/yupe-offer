@@ -54,7 +54,7 @@ $this->menu = $this->module->getNavigation();
             [
                 'name'   => 'user_id',
                 'type'   => 'raw',
-                'value'  => 'CHtml::link($data->user->getFullName(), array("/user/userBackend/view", "id" => $data->user->id))',
+                'value'  => '$data->getLinkByUser()',
                 'filter' => CHtml::activeDropDownList(
                     $model,
                     'user_id',

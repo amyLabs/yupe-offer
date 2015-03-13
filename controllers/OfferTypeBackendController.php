@@ -150,9 +150,10 @@ class OfferTypeBackendController extends yupe\components\controllers\BackControl
     public function actionIndex()
     {
         $model = new OfferType('search');
-
         $model->unsetAttributes();
-
+        if (($data = Yii::app()->getRequest()->getQuery('OfferType')) !== null) {
+            $model->setAttributes($data);
+        }
         $this->render('index',['model' => $model]);
     }
 

@@ -51,6 +51,7 @@ return [
     'Save offer and continue' => 'Сохранить предложение и продолжить',
     'Create offer and close' => 'Добавить предложение и закрыть',
     'Save offer and close' => 'Сохранить предложение и закрыть',
+    'Offer sent for moderation!' => 'Предложение отправлено на модерацию!',
     //offerType
 
     'Offer type - add' => 'Тип предложения - добавить',
