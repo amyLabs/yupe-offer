@@ -183,7 +183,7 @@ class Offer extends yupe\models\YModel
 
         $offerType = OfferType::model()->active()->findByPk((int)$post['type_id']);
 
-        if (null === $offerType || !$offerType->checkCreatePublicOffer($post['user_id']) ) {
+        if (null === $offerType || !$offerType->checkParamAdd($post['user_id']) ) {
             $this->addError('type_id', Yii::t('OfferModule.offer', "You can't write in this offerType!"));
             return false;
         }

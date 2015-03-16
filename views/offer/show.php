@@ -30,7 +30,7 @@ $this->breadcrumbs = [
                             </a>
                         </div>
                     </div>
-                    <div id="collapseOne" class="panel-collapse collapse">
+                    <div id="collapseOne" class="panel-collapse collapse<?php echo empty($offer->errors) ? "" : " in";?>">
                         <?php $form = $this->beginWidget(
                             'bootstrap.widgets.TbActiveForm',
                             [
@@ -40,14 +40,7 @@ $this->breadcrumbs = [
                                 'htmlOptions'            => ['class' => ''],
                             ]
                         ); ?>
-                            <?php $this->beginWidget(
-                                'bootstrap.widgets.TbCollapse'/*,
-                                [
-                                    'htmlOptions' => [
-                                        'class' => 'panel-collapse collapse in'
-                                    ]
-                                ]*/
-                            ); ?>
+                            <?php $this->beginWidget('bootstrap.widgets.TbCollapse'); ?>
                                 <?php echo $form->errorSummary($offer); ?>
                                 <div class="panel-body">
                                     <div class="row">

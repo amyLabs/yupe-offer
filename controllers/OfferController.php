@@ -62,7 +62,7 @@ class OfferController extends \yupe\components\controllers\FrontController
             throw new CHttpException(404, Yii::t('OfferModule.offer','Offer type "{offerType}" was not found!',['{offerType}' => $slugType]));
         }
 
-        if ($offerType->param_view == OfferType::PARAM_VIEW_USER && Yii::app()->user->isGuest) {
+        if ( !$offerType->checkParamView() ) {
             throw new CHttpException(403,  Yii::t('OfferModule.offer','You do not have access to offer type "{offerType}"!',['{offerType}' => $slugType]));
         }
 

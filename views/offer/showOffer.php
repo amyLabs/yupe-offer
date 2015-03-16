@@ -15,3 +15,24 @@ $this->breadcrumbs = [
         <p><?php echo $offer->text; ?></p>
     </div>
 </div>
+
+<?php if ( $offer->type->checkParamMessage() ) : ?>
+    <div class="comments-section">
+        <?php $this->widget(
+            'application.modules.comment.widgets.CommentsListWidget',
+            [
+                'model'    => $offer,
+                'modelId'  => $offer->id
+            ]
+        ); ?>
+
+        <?php $this->widget(
+            'application.modules.comment.widgets.CommentFormWidget',
+            [
+                'redirectTo' => $this->createUrl('/offer/offer/showOffer/', ['slugType' => CHtml::encode($offer->type->slug), 'slug' => CHtml::encode($offer->slug)]),
+                'model'      => $offer,
+                'modelId'    => $offer->id,
+            ]
+        ); ?>
+    </div>
+<?php endif; ?>

@@ -93,7 +93,7 @@ class OfferType extends yupe\models\YModel
             'params' => Yii::t('OfferModule.offer', 'Params'),
             'param_add' => Yii::t('OfferModule.offer', 'Who can add offers?'),
             'param_view' => Yii::t('OfferModule.offer', 'Who can view offers?'),
-            'param_message' => Yii::t('OfferModule.offer', 'Who can add messages to offers?'),
+            'param_message' => Yii::t('OfferModule.offer', 'Who can view and add messages to offers?'),
         ];
 	}
 
@@ -225,7 +225,7 @@ class OfferType extends yupe\models\YModel
      *
      * @return bool
      */
-    public function checkCreatePublicOffer($user_id)
+    public function checkParamAdd($user_id)
     {
         if ($this->param_add == OfferType::PARAM_ADD_NOBODY ) {
             return false;
@@ -236,5 +236,41 @@ class OfferType extends yupe\models\YModel
         }
 
         return true;
+    }
+
+    /**
+     * Проверяем может ли пользователь просматривать данный тип предложения
+     *
+     * @return bool
+     */
+    public function checkParamView()
+    {
+        if ($this->param_view == OfferType::PARAM_VIEW_ALL ) {
+            return true;
+        }
+
+        if ($this->param_view == OfferType::PARAM_VIEW_USER && !Yii::app()->user->isGuest ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Проверяем может ли пользователь оставлять комментарии к данныму типу предложения
+     *
+     * @return bool
+     */
+    public function checkParamMessage()
+    {
+        if ($this->param_message == OfferType::PARAM_MESSAGE_ALL ) {
+            return true;
+        }
+
+        if ($this->param_message == OfferType::PARAM_MESSAGE_USER && !Yii::app()->user->isGuest ) {
+            return true;
+        }
+
+        return false;
     }
 }

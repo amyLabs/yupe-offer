@@ -63,5 +63,5 @@ return [
     'Save type and close' => 'Сохранить тип и закрыть',
     'Who can add offers?' => 'Кто может добавлять предложения?',
     'Who can view offers?' => 'Кто может просматривать предложения?',
-    'Who can add messages to offers?' => 'Кто может добавлять сообщения в предложения?',
+    'Who can view and add messages to offers?' => 'Кто может просматривать и добавлять сообщения в предложения?',
 ];
