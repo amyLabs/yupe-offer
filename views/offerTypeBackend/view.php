@@ -84,7 +84,6 @@ $this->menu = array_merge(
                 'name' => 'param_add',
                 'type' => 'raw',
                 'value' => $model->getParamAdd(),
-                'htmlOptions'=>array('width'=>'40px'),
             ],
             [
                 'name' => 'param_view',
@@ -99,3 +98,19 @@ $this->menu = array_merge(
         ],
     ]
 ); ?>
+
+<?php if ( Yii::app()->hasModule('groups') ) : ?>
+    <?php $this->widget(
+        'bootstrap.widgets.TbDetailView',
+        [
+            'data'       => $model,
+            'attributes' => [
+                [
+                    'name' => 'param_group',
+                    'type' => 'raw',
+                    'value' => $model->getParamGroup(),
+                ],
+            ],
+        ]
+    ); ?>
+<?php endif; ?>

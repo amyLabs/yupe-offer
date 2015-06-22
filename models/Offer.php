@@ -150,7 +150,13 @@ class Offer extends yupe\models\YModel
         return isset($data[$this->status]) ? $data[$this->status] : Yii::t('OfferModule.offer', '*unknown*');
     }
 
-    public function getByType($typeID)
+    /**
+     * Возвращает список предложений по typeID
+     *
+     * @param $typeID
+     * @return Offer
+     */
+    static public function getByType($typeID)
     {
         $offers = new Offer('search');
         $offers->unsetAttributes();

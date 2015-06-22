@@ -53,7 +53,6 @@ return [
     'Save offer and close' => 'Сохранить предложение и закрыть',
     'Offer sent for moderation!' => 'Предложение отправлено на модерацию!',
     //offerType
-
     'Offer type - add' => 'Тип предложения - добавить',
     'Offer type - edit' => 'Тип предложения - редактировать',
     'Offer type - view' => 'Тип предложения - просмотр',
@@ -64,4 +63,6 @@ return [
     'Who can add offers?' => 'Кто может добавлять предложения?',
     'Who can view offers?' => 'Кто может просматривать предложения?',
     'Who can view and add messages to offers?' => 'Кто может просматривать и добавлять сообщения в предложения?',
+    'Group' => 'Группа',
+    'Members of group' => 'Участники группы'
 ];

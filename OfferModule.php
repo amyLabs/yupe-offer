@@ -58,11 +58,13 @@ class OfferModule extends yupe\components\WebModule
     {
         parent::init();
 
-        $this->setImport(
-            [
-                'application.modules.offer.models.*',
-            ]
-        );
+        $import = ['application.modules.offer.models.*'];
+
+        if ( Yii::app()->hasModule('groups') ) {
+            $import[] = 'application.modules.groups.models.*';
+        }
+
+        $this->setImport($import);
     }
 
     public function getAdminPageLink()

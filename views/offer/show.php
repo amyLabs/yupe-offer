@@ -17,7 +17,7 @@ $this->breadcrumbs = [
     </div>
 </div>
 
-<?php if ( $offerType->checkCreatePublicOffer(Yii::app()->getUser()->getId()) ) : ?>
+<?php if ( $offerType->checkParamAdd(Yii::app()->getUser()->getId()) ) : ?>
     <div class="row">
         <div class="col-sm-12">
             <div class="panel-group" id="extended-options">

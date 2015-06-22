@@ -22,21 +22,34 @@
  * @property integer $param_add
  * @property integer $param_view
  * @property integer $param_message
+ * @property integer $param_group
  */
 class OfferType extends yupe\models\YModel
 {
     const STATUS_BLOCKED = 0;
     const STATUS_ACTIVE = 1;
 
+    /**
+     * Список констант параметра добавления предложения
+     */
     const PARAM_ADD_NOBODY = 0;
     const PARAM_ADD_ALL = 1;
     const PARAM_ADD_USER = 2;
+    const PARAM_ADD_GROUP = 3;
 
+    /**
+     * Список констант параметра просмотра предложения
+     */
     const PARAM_VIEW_ALL = 0;
     const PARAM_VIEW_USER = 1;
+    const PARAM_VIEW_GROUP = 2;
 
+    /**
+     * Список канстант параметра комментирования прелдожения
+     */
     const PARAM_MESSAGE_ALL = 0;
     const PARAM_MESSAGE_USER = 1;
+    const PARAM_MESSAGE_GROUP = 2;
 
 	/**
 	 * @return string the associated database table name
@@ -53,7 +66,7 @@ class OfferType extends yupe\models\YModel
 	{
 		return [
 			['title, slug, description, status', 'required'],
-			['status, param_add, param_view, param_message', 'numerical', 'integerOnly'=>true],
+			['status, param_add, param_view, param_message, param_group', 'numerical', 'integerOnly'=>true],
 			['title, slug', 'length', 'max'=>150],
 			['description', 'length', 'max'=>250],
 			['id, title, slug, description, status', 'safe', 'on'=>'search'],
@@ -94,6 +107,7 @@ class OfferType extends yupe\models\YModel
             'param_add' => Yii::t('OfferModule.offer', 'Who can add offers?'),
             'param_view' => Yii::t('OfferModule.offer', 'Who can view offers?'),
             'param_message' => Yii::t('OfferModule.offer', 'Who can view and add messages to offers?'),
+            'param_group' => Yii::t('OfferModule.offer', 'Group'),
         ];
 	}
 
@@ -118,6 +132,7 @@ class OfferType extends yupe\models\YModel
 		$criteria->compare('title',$this->title,true);
 		$criteria->compare('description',$this->description,true);
 		$criteria->compare('status',$this->status);
+        $criteria->compare('param_group',$this->param_group);
 
 		return new CActiveDataProvider($this, [
 			'criteria'=>$criteria,
@@ -136,6 +151,8 @@ class OfferType extends yupe\models\YModel
 	}
 
     /**
+     * Получаем список статусов
+     *
      * @return array
      */
     public function getStatusList()
@@ -147,6 +164,8 @@ class OfferType extends yupe\models\YModel
     }
 
     /**
+     * Получаем статус
+     *
      * @return string
      */
     public function getStatus()
@@ -157,15 +176,23 @@ class OfferType extends yupe\models\YModel
     }
 
     /**
+     * Получаем список параметра "param_add"
+     *
      * @return array
      */
     public function getParamAddList()
     {
-        return [
+        $list = [
             self::PARAM_ADD_NOBODY => Yii::t('OfferModule.offer', 'Nobody'),
             self::PARAM_ADD_ALL  => Yii::t('OfferModule.offer', 'All'),
             self::PARAM_ADD_USER  => Yii::t('OfferModule.offer', 'Only user'),
         ];
+
+        if ( Yii::app()->hasModule('groups') ) {
+            $list[self::PARAM_ADD_GROUP] = Yii::t('OfferModule.offer', 'Members of group');
+        }
+
+        return $list;
     }
 
     /**
@@ -179,14 +206,22 @@ class OfferType extends yupe\models\YModel
     }
 
     /**
+     * Получаем список параметра "param_view"
+     *
      * @return array
      */
     public function getParamViewList()
     {
-        return [
+        $list = [
             self::PARAM_VIEW_ALL => Yii::t('OfferModule.offer', 'All'),
             self::PARAM_VIEW_USER  => Yii::t('OfferModule.offer', 'Only user'),
         ];
+
+        if ( Yii::app()->hasModule('groups') ) {
+            $list[self::PARAM_VIEW_GROUP] = Yii::t('OfferModule.offer', 'Members of group');
+        }
+
+        return $list;
     }
 
     /**
@@ -200,14 +235,22 @@ class OfferType extends yupe\models\YModel
     }
 
     /**
+     * Получаем список параметра "param_message"
+     *
      * @return array
      */
     public function getParamMessageList()
     {
-        return [
+        $list = [
             self::PARAM_MESSAGE_ALL => Yii::t('OfferModule.offer', 'All'),
             self::PARAM_MESSAGE_USER  => Yii::t('OfferModule.offer', 'Only user'),
         ];
+
+        if ( Yii::app()->hasModule('groups') ) {
+            $list[self::PARAM_MESSAGE_GROUP] = Yii::t('OfferModule.offer', 'Members of group');
+        }
+
+        return $list;
     }
 
     /**
@@ -235,6 +278,13 @@ class OfferType extends yupe\models\YModel
             return false;
         }
 
+        if ($this->param_message == OfferType::PARAM_ADD_GROUP && $this->param_group != 0 && Yii::app()->hasModule('groups')) {
+            $group = Groups::model()->findByPk($this->param_group);
+            if ($group->userIn(Yii::app()->user->getId())) {
+                return true;
+            }
+        }
+
         return true;
     }
 
@@ -251,6 +301,13 @@ class OfferType extends yupe\models\YModel
 
         if ($this->param_view == OfferType::PARAM_VIEW_USER && !Yii::app()->user->isGuest ) {
             return true;
+        }
+
+        if ($this->param_message == OfferType::PARAM_VIEW_GROUP && $this->param_group != 0 && Yii::app()->hasModule('groups')) {
+            $group = Groups::model()->findByPk($this->param_group);
+            if ($group->userIn(Yii::app()->user->getId())) {
+                return true;
+            }
         }
 
         return false;
@@ -271,6 +328,32 @@ class OfferType extends yupe\models\YModel
             return true;
         }
 
+        if ($this->param_message == OfferType::PARAM_MESSAGE_GROUP && $this->param_group != 0 && Yii::app()->hasModule('groups')) {
+            $group = Groups::model()->findByPk($this->param_group);
+            if ($group->userIn(Yii::app()->user->getId())) {
+                return true;
+            }
+        }
+
         return false;
+    }
+
+    /**
+     * Получаем название группы
+     *
+     * @return string
+     */
+    public function getParamGroup()
+    {
+        if ($this->param_group != 0 && Yii::app()->hasModule('groups'))
+        {
+            $group = Groups::model()->findByPk($this->param_group);
+
+            if ( $group !== NULL ) {
+                return $group->name;
+            }
+        }
+
+        return Yii::t('OfferModule.offer', '*unknown*');
     }
 }

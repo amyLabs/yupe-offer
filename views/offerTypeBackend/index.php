@@ -16,6 +16,58 @@ $this->menu = $this->module->getNavigation();
     </h1>
 </div>
 
+<?php $columns = [
+    [
+        'name' => 'id',
+        'htmlOptions' => [
+            'width' => '100px',
+        ]
+    ],
+    [
+        'name' => 'slug',
+        'htmlOptions' => [
+            'width' => '150px',
+        ]
+    ],
+    [
+        'name' => 'title',
+        'htmlOptions' => [
+            'width' => '150px',
+        ]
+    ],
+    [
+        'name' => 'description',
+        'type'    => 'raw',
+    ],
+    [
+        'class'   => 'yupe\widgets\EditableStatusColumn',
+        'name'    => 'status',
+        'url'     => $this->createUrl('/offer/offerTypeBackend/inline'),
+        'source'  => $model->getStatusList(),
+        'options' => [
+            OfferType::STATUS_ACTIVE  => ['class' => 'label-success'],
+            OfferType::STATUS_BLOCKED => ['class' => 'label-danger'],
+        ],
+        'htmlOptions' => [
+            'width' => '200px',
+        ]
+    ]
+];
+
+if ( Yii::app()->hasModule('groups') ) {
+    $columns[] = [
+        'name' => 'param_group',
+        'type' => 'raw',
+        'value' => '$data->getParamGroup()',
+        'filter'   => CHtml::activeDropDownList(
+            $model,
+            'param_group',
+            CHtml::listData(Groups::model()->getList(), 'id', 'name'),
+            ['class' => 'form-control', 'empty' => '---']
+        ),
+    ];
+} ?>
+
 <?php $this->widget(
     'yupe\widgets\CustomGridView',
     [
@@ -23,45 +75,11 @@ $this->menu = $this->module->getNavigation();
         'dataProvider' => $model->search(),
         'filter'       => $model,
         'sortField'    => 'order',
-        'columns'      => [
+        'columns'      => array_merge(
+            $columns,
             [
-                'name' => 'id',
-                'htmlOptions' => [
-                    'width' => '100px',
-                ]
-            ],
-            [
-                'name' => 'slug',
-                'htmlOptions' => [
-                    'width' => '150px',
-                ]
-            ],
-            [
-                'name' => 'title',
-                'htmlOptions' => [
-                    'width' => '150px',
-                ]
-            ],
-            [
-                'name' => 'description',
-                'type'    => 'raw',
-            ],
-            [
-                'class'   => 'yupe\widgets\EditableStatusColumn',
-                'name'    => 'status',
-                'url'     => $this->createUrl('/offer/offerTypeBackend/inline'),
-                'source'  => $model->getStatusList(),
-                'options' => [
-                    OfferType::STATUS_ACTIVE  => ['class' => 'label-success'],
-                    OfferType::STATUS_BLOCKED => ['class' => 'label-danger'],
-                ],
-                'htmlOptions' => [
-                    'width' => '200px',
-                ]
-            ],
-            [
-                'class' => 'yupe\widgets\CustomButtonColumn',
-            ],
-        ],
+                ['class' => 'yupe\widgets\CustomButtonColumn'],
+            ]
+        )
     ]
 ); ?>

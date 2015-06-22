@@ -170,6 +170,28 @@
                             ); ?>
                         </div>
                     </div>
+
+                    <?php if ( Yii::app()->hasModule('groups') ) : ?>
+                        <div class="row">
+                            <div class="col-xs-7">
+                                <?php echo $form->select2Group(
+                                    $model,
+                                    'param_group',
+                                    [
+                                        'widgetOptions' => [
+                                            'data' => ['' => '---'] + CHtml::listData(Groups::model()->getList(), 'id', 'name'),
+                                            'htmlOptions' => [
+                                                'class'               => 'popover-help',
+                                                'data-original-title' => $model->getAttributeLabel('param_group'),
+                                                'data-content'        => $model->getAttributeDescription('param_group'),
+                                                'data-container'      => 'body',
+                                            ],
+                                        ]
+                                    ]
+                                ); ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

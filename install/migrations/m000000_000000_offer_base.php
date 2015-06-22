@@ -25,13 +25,13 @@ class m000000_000000_offer_base extends yupe\components\DbMigration
         $this->createTable(
             '{{offer}}',
             [
-                'id'            => 'pk',
-                'title'         => "varchar(150) NOT NULL",
-                'slug'          => "varchar(150) NOT NULL",
+                'id'      => 'pk',
+                'title'   => "varchar(150) NOT NULL",
+                'slug'    => "varchar(150) NOT NULL",
                 'type_id' => 'integer NOT NULL',
-                'user_id'       => "integer NOT NULL",
-                'text'          => 'varchar(250) NOT NULL',
-                'status'        => 'integer NOT NULL',
+                'user_id' => "integer NOT NULL",
+                'text'    => 'varchar(250) NOT NULL',
+                'status'  => 'integer NOT NULL',
             ],
             $this->getOptions()
         );
